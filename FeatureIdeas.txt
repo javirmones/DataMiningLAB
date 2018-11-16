@@ -1,0 +1,53 @@
+first watched chapter
+max access time duration from course start
+
+commit
+pull code
+new features
+new algorithms
+
+set(['wiki', 'course_info_server', 'vertical_server', 'static_tab_server', 'outlink_browser', 'dictation_server', 'navigate', 'discussion_server', 'course', 'peergrading_browser', 'video', 'dictation', 'combinedopenended_server', 'course_server', 'course_info_browser', 'combinedopenended_browser', 'discussion', 'outlink_server', 'access', 'sequential', 'sequential_browser', 'vertical_browser', 'problem_server', 'course_info', 'vertical', 'peergrading_server', 'static_tab', 'static_tab_browser', 'problem_browser', 'html_server', 'html_browser', 'discussion_browser', 'outlink', 'chapter', 'about', 'peergrading', 'video_browser', 'about_browser', 'chapter_server', 'about_server', 'video_server', 'combinedopenended', 'INTERCEPT', 'sequential_server', 'chapter_browser', 'course_browser', 'problem', 'dictation_browser', 'html'])
+
+default value of features
+
+event.event_type
+3112191 access
+649259 discussion
+1009309 navigate
+1237883 page_close
+1261170 problem
+796958 video
+90507 wiki
+
+unique events
+wiki
+navigate
+access
+
+object.category
+ 125 about
+ 547 chapter
+  18 combinedopenended
+  39 course
+  78 course_info
+  11 dictation
+1738 discussion
+ 966 html
+  85 outlink
+  15 peergrading
+5135 problem
+3551 sequential
+  67 static_tab
+9823 vertical
+5051 video
+
+
+total number of students in a course - bad feature... results in lower f1 and roc
+Start date is available only for chapter, sequential and course page
+very limited text available
+
+total enrollments per course - only 40 courses
+average lag in viewing videos
+average lag in problems
+maximum parallel enrollments - don't have course start date
+%ages of completed objects
