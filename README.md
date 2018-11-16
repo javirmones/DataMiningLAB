@@ -12,7 +12,7 @@ To-do
 * [Sprint 1](https://github.com/javirmones/DataMiningLAB/tree/master/sprint1)
 
 ## Software
-El proyecto será desarrolado utilizando fundamentalmente Python 3.X y las herramientas del IDE Anaconda.
+El proyecto será desarrollado utilizando fundamentalmente Python 3.X y las herramientas del IDE Anaconda.
 
 ## Miembros
 * Alfonso Barragán Carmona
