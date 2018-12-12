@@ -2,17 +2,17 @@
 Repositorio sobre el problema de la KDD Cup de 2015, que trata sobre el abandono de cursos on-line.
 
 ## Problema
-To-do
+
+Enfocamos nuestro problema en realizar un análisis de todos los cursos disponibles, y así poder determinar qué tipo de cursos son más margen de mejora en función de la conducta de los usuarios sobre el curso y la relación de abandono de los mismos.
 
 <p align="center">
   <img width="400" height="300" src="https://github.com/javirmones/DataMiningLAB/blob/master/resources/img/blue_450.gif">
 </p>
 
-## Sprints
-* [Sprint 1](https://github.com/javirmones/DataMiningLAB/tree/master/sprint1)
 
 ## Software
-El proyecto será desarrollado utilizando fundamentalmente Python 3.X y las herramientas del IDE Anaconda.
+El proyecto será desarrollado utilizando fundamentalmente Python 3.X y las herramientas del IDE Anaconda, además,
+utilizaremos una base de datos MySQL.
 
 ## Miembros
 * Alfonso Barragán Carmona

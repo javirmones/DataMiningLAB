@@ -11,7 +11,6 @@ def read_dataset(path_no_attacks):
     return pd.read_csv(path_no_attacks)
 
 
-
 def clean_first_line_dataset(path_in,path_out):
     input_file  = open(path_in, 'r')
     output_file = open(path_out, 'w')
