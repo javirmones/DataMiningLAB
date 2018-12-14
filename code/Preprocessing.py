@@ -10,6 +10,8 @@ ruta_cursos_iteracciones_modulo_preprocesado = 'data/cursos_modulo_preprocesado.
 def read_dataset(path_no_attacks):
     return pd.read_csv(path_no_attacks)
 
+def labeling_dropouts(df_last_inte, df_courses_users):
+  pass
 
 def clean_first_line_dataset(path_in,path_out):
     input_file  = open(path_in, 'r')
