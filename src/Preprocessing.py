@@ -61,6 +61,7 @@ if __name__ == '__main__':
   ultima_interaccion_cursos     = read_dataset(route_of.last_interaction)
   cursos_usuario                = read_dataset(route_of.enrollment_data)
   interacciones_usuario         = read_dataset(route_of.data_interactions)
+  interacciones_usuario_module  = read_dataset(route_of.total_interaction)
   
   log_enrollment                = cursos_usuario.merge(interacciones_usuario, on='enrollment_id')  
   to_csv(route_of.labeling_dropout, cursos_usuario)
