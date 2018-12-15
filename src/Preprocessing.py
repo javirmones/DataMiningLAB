@@ -37,6 +37,10 @@ def calculate_ending_date(date_str):
   
   return date_def
 
+def to_csv(path,dataframe):
+    dataframe.to_csv(path)
+    print("File created sucessfully at: {}".format(path))
+
 def clean_first_line_dataset(path_in,path_out):
   input_file  = open(path_in, 'r')
   output_file = open(path_out, 'w')
@@ -59,5 +63,6 @@ if __name__ == '__main__':
   interacciones_usuario         = read_dataset(route_of.data_interactions)
   
   log_enrollment                = cursos_usuario.merge(interacciones_usuario, on='enrollment_id')  
+  to_csv(route_of.labeling_dropout, cursos_usuario)
   
   labeling_dropouts(log_enrollment, fechas_curso, cursos_usuario)
