@@ -18,3 +18,7 @@ utilizaremos una base de datos MySQL.
 * Alfonso Barragán Carmona
 * Javier Monescillo Buitrón
 * Roberto Plaza Romero
+
+## Licencia
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
