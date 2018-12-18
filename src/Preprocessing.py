@@ -73,8 +73,9 @@ def clean_first_line_dataset(path_in,path_out):
   
 def calculate_dropouts_and_finished_by_course(df_labeled, df_courses):
     
-    df_courses['n_drops']       = 0
-    df_courses['n_finished']    = 0
+    df_courses['n_drops']               = 0
+    df_courses['n_finished']            = 0
+    df_courses['dropout_percentage']    = 0
     
     for course in df_courses['course_id']:
         df_drops  = df_labeled[(df_labeled.course_id == course) & (df_labeled.finished_course == 0)]
@@ -83,33 +84,23 @@ def calculate_dropouts_and_finished_by_course(df_labeled, df_courses):
         index = df_courses[(df_courses.course_id == course)].index
         df_courses.iloc[index, 3] = len(df_drops)
         df_courses.iloc[index, 4] = len(df_finish)
+        df_courses.iloc[index, 5] = (len(df_drops) / (len(df_drops) + len(df_finish)))
+        
   
-
-def assign_number_submodules_by_type_and_course(category_list, df_course):
-    
-    for category in category_list:
-        df_category     = read_dataset(route_of.target_data_category.format(category))
         
-        for course in df_course['course_id']:
-            if (len(df_category[(df_category.course_id == course)])) <= 0:
-                aux = pd.DataFrame([[course, 0]], [len(df_category)], ['course_id', 'number_of_{}'.format(category)])
-                df_category = pd.concat([df_category,aux])
+def combine_datasets_to_target_data(courses_date, courses_submodules_by_type, courses_events_by_type):
+    
+    data_target_2   = courses_date.merge(courses_submodules_by_type, on='course_id')
+    data_target_3   = data_target_2.merge(courses_events_by_type, on='course_id')
+    
+    data_target_3['duration_in_days'] = 0
+    for index in range(len(data_target_3)):
+        date_from = calculate_ending_date(data_target_3.iloc[index, 1])
+        date_to   = calculate_ending_date(data_target_3.iloc[index, 2])
         
-        to_csv(route_of.target_data_category.format(category), df_category)
-        
-def combine_datasets_to_target_data(categories):
+        duration = date_to - date_from
+        data_target_3.iloc[index, 28] = duration.days
     
-    data_target_users_per_course        = read_dataset(route_of.users_per_course)
-    data_target_courses_date            = read_dataset(route_of.date_courses)
-    data_target_submodules_total        = read_dataset(route_of.number_submodules_by_courses)
-    
-    data_target_2   = data_target_users_per_course.merge(data_target_courses_date, on='course_id')
-    data_target_3   = data_target_2.merge(data_target_submodules_total, on='course_id')
-    
-    for category in categories:
-        df_category     = read_dataset(route_of.target_data_category.format(category))
-        data_target_3   = data_target_3.merge(df_category, on='course_id')
-
     return data_target_3
 
 if __name__ == '__main__':
@@ -123,6 +114,9 @@ if __name__ == '__main__':
   cursos_usuario                = read_dataset(route_of.enrollment_data)
   interacciones_usuario         = read_dataset(route_of.data_interactions)
   
+  submodulos_por_tipo_y_curso   = read_dataset(route_of.course_types_modules)
+  eventos_por_tipo_y_curso      = read_dataset(route_of.course_types_events)
+  
   log_enrollment                = interacciones_usuario.merge(cursos_usuario, on='enrollment_id')  
   to_csv(route_of.interactions_enrollment, log_enrollment)
   
@@ -132,6 +126,5 @@ if __name__ == '__main__':
   to_csv(route_of.labeling_dropout, cursos_usuario)
   to_csv(route_of.users_drop_and_finished_by_course, fechas_curso)
   
-  assign_number_submodules_by_type_and_course(categories, fechas_curso)
-  data_target = combine_datasets_to_target_data(categories)
-  preprocess_interactions_dates(route_of.interactions_enrollment, route_of.interactions_enrollment_def)
+  data_target = combine_datasets_to_target_data(fechas_curso, submodulos_por_tipo_y_curso, eventos_por_tipo_y_curso)
+#  preprocess_interactions_dates(route_of.interactions_enrollment, route_of.interactions_enrollment_def)
