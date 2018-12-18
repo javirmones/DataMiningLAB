@@ -5,6 +5,7 @@
 # -*- coding: utf-8 -*-
 
 from sklearn import tree
+from sklearn.tree import _tree
 from sklearn.model_selection import KFold
 import pandas as pd
 import numpy as np
@@ -41,10 +42,10 @@ def cross_validations_aux(dataframe):
           f_train = dataframe.loc[train_fold]
           f_test = dataframe.loc[test_fold]
           
-          model = tree_model.fit( X = f_train.drop(['attack'], axis=1), 
-                                 y = f_train['attack'])
-          test_acc = model.score(X = f_test.drop(['attack'], axis=1), 
-                                  y = f_test['attack'])
+          model = tree_model.fit( X = f_train.drop(['group'], axis=1), 
+                                 y = f_train['group'])
+          test_acc = model.score(X = f_test.drop(['group'], axis=1), 
+                                  y = f_test['group'])
           fold_accuracy.append(test_acc)
           
       avg = sum(fold_accuracy)/len(fold_accuracy)
@@ -130,44 +131,36 @@ def decision_tree(train, test):
         
     return clf,graph
 
-def production_simulation(clf_rf, dataset_prueba):
-    dataset_prod = pd.concat([dataset_prueba, test])
-    dataset_prod = dataset_prod.sample(frac=1)
-  
-    features  = dataset_prod.columns[:13]
-    x_test    = dataset_prod[features]
-    y_test    = dataset_prod['attack']
-  
-    preds_rf = clf_rf.predict(x_test) # Test del modelo
+def tree_to_code(tree, feature_names):
     
-#    report(random_search.cv_results_)    
-    
-    print("Random Forest: \n" 
-          +classification_report(y_true=y_test, y_pred=preds_rf))
-    
-    # Matriz de confusión
-    
-    print("Matriz de confusión:\n")
-    matriz = pd.crosstab(dataset_prod['attack'], preds_rf, rownames=['actual'], colnames=['preds'])
-    print(matriz)
-    
-    # Variables relevantes
-    
-    print("Relevancia de variables:\n")
-    print(pd.DataFrame({'Indicador': features ,
-                  'Relevancia': clf_rf.feature_importances_}),"\n")
-    print("Máxima relevancia RF :" , max(clf_rf.feature_importances_), "\n")
+    tree_ = tree.tree_
+    feature_name = [
+        feature_names[i] if i != _tree.TREE_UNDEFINED else "undefined!"
+        for i in tree_.feature
+    ]
+    print("def tree({}):".format(", ".join(feature_names)))
+
+    def recurse(node, depth):
+        indent = "  " * depth
+        if tree_.feature[node] != _tree.TREE_UNDEFINED:
+            name = feature_name[node]
+            threshold = tree_.threshold[node]
+            print ("{}if {} <= {}:".format(indent, name, threshold))
+            recurse(tree_.children_left[node], depth + 1)
+            print ("{}else:  # if {} > {}".format(indent, name, threshold))
+            recurse(tree_.children_right[node], depth + 1)
+        else:
+            print ("{}return {}".format(indent, tree_.value[node]))
+
+    recurse(0, 1)
 
 if __name__ == '__main__':
-  data_train, data_test             = divide_datasets(data_target_treated)
-#  data_train_low, data_test_low     = divide_datasets(data_target_treated[(data_target_treated['group'] == 'low_quality_course')])
-#  data_train_reg, data_test_reg     = divide_datasets(data_target_treated[(data_target_treated['group'] == 'regular_course')])
-#  data_train_high, data_test_high   = divide_datasets(data_target_treated[(data_target_treated['group'] == 'quality_course')])
-#  
-#  train.drop(train.columns[[0,1]], axis=1, inplace=True)
-#  test.drop(test.columns[[0,1]], axis=1, inplace=True)
+  data_target_treated = read_dataset('../data/data_target_treated.csv')
+  data_target_treated.drop(data_target_treated.columns[0], axis=1, inplace=True)
   
+  data_train, data_test             = divide_datasets(data_target_treated)
   decision_birch, graph = decision_tree(data_train, data_test)
+  tree_to_code(decision_birch, data_train.columns)
    
    
    
