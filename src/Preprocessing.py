@@ -40,6 +40,22 @@ def calculate_ending_date(date_str):
 def to_csv(path,dataframe):
     dataframe.to_csv(path)
     print("File created sucessfully at: {}".format(path))
+    
+def preprocess_interactions_dates(route_interactions, route_output):
+    file_in     = open(route_interactions, 'r')
+    file_out    = open(route_output, 'w')
+    
+    file_out.write(file_in.readline())
+    line = file_in.readline()
+    
+    while line:
+        line_components     = line.split(',')
+        line_components[2]  = line_components[2].split('T')[0]
+        line_to_write = ','.join(map(str, line_components))
+        
+        file_out.write(line_to_write)
+        line = file_in.readline()
+
 
 def clean_first_line_dataset(path_in,path_out):
   input_file  = open(path_in, 'r')
@@ -96,28 +112,26 @@ def combine_datasets_to_target_data(categories):
 
     return data_target_3
 
-    # TO DO CONTAR USUARIOS ABANDONO EN METODO APARTE Y UNIR TODOS LOS DATASETS
-
 if __name__ == '__main__':
   
   categories = ['about', 'chapter', 'course', 'course_info', 'html',
                   'outlink', 'problem', 'sequential', 'static_tab',
                   'vertical', 'video', 'combinedopenended', 'peergrading',
                   'discussion', 'dictation']
-#  fechas_curso                  = read_dataset(route_of.date_courses)
-#  ultima_interaccion_cursos     = read_dataset(route_of.last_interaction)
-#  cursos_usuario                = read_dataset(route_of.enrollment_data)
-#  interacciones_usuario         = read_dataset(route_of.data_interactions)
-#  interacciones_usuario_module  = read_dataset(route_of.total_interaction)
-#  
-#  log_enrollment                = cursos_usuario.merge(interacciones_usuario, on='enrollment_id')  
-#  
-#  labeling_dropouts(log_enrollment, fechas_curso, cursos_usuario)
-#  calculate_dropouts_and_finished_by_course(cursos_usuario, fechas_curso)
-#  
-#  to_csv(route_of.labeling_dropout, cursos_usuario)
-#  to_csv(route_of.users_drop_and_finished_by_course, fechas_curso)
+  fechas_curso                  = read_dataset(route_of.date_courses)
+  ultima_interaccion_cursos     = read_dataset(route_of.last_interaction)
+  cursos_usuario                = read_dataset(route_of.enrollment_data)
+  interacciones_usuario         = read_dataset(route_of.data_interactions)
+  
+  log_enrollment                = interacciones_usuario.merge(cursos_usuario, on='enrollment_id')  
+  to_csv(route_of.interactions_enrollment, log_enrollment)
+  
+  labeling_dropouts(log_enrollment, fechas_curso, cursos_usuario)
+  calculate_dropouts_and_finished_by_course(cursos_usuario, fechas_curso)
+  
+  to_csv(route_of.labeling_dropout, cursos_usuario)
+  to_csv(route_of.users_drop_and_finished_by_course, fechas_curso)
   
   assign_number_submodules_by_type_and_course(categories, fechas_curso)
   data_target = combine_datasets_to_target_data(categories)
-  
+  preprocess_interactions_dates(route_of.interactions_enrollment, route_of.interactions_enrollment_def)
