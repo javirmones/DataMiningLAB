@@ -6,8 +6,8 @@ import numpy as np
 import datetime as dt
 import Paths as route_of
 
-def read_dataset(path_no_attacks):
-    return pd.read_csv(path_no_attacks)
+def read_dataset(path):
+    return pd.read_csv(path)
   
 def labeling_dropouts(df_interactions, df_courses_date, df_courses_users):
   df_courses_users['finished_course']=0
@@ -127,4 +127,5 @@ if __name__ == '__main__':
   to_csv(route_of.users_drop_and_finished_by_course, fechas_curso)
   
   data_target = combine_datasets_to_target_data(fechas_curso, submodulos_por_tipo_y_curso, eventos_por_tipo_y_curso)
+  to_csv(route_of.target_data, data_target)
 #  preprocess_interactions_dates(route_of.interactions_enrollment, route_of.interactions_enrollment_def)

@@ -17,15 +17,28 @@ from sklearn.decomposition import PCA
 from pylab import pcolor, xticks, yticks
 from sklearn import preprocessing
 
+exclude         = ['course_id','from','to','course','course_info','combinedopened',
+                   'n_navigates','n_discussions','n_wikis','n_page_close',
+                   'duration_in_days','dropout_percentage', 'n_drops', 
+                   'n_finished']
 
 def plot_courses(data_target):
     data_to_plot = data_target.sort_values('dropout_percentage')
-    plt.plot(data_to_plot['dropout_percentage'])
+    data_to_plot['dropout_percentage'].hist(histtype = 'bar', bins = 3, label="C")
+    
+    plt.title("Actual dropout percentage in MOOC dataset")
+    plt.xlabel("dropout percentage")
+    plt.ylabel("number of courses")
+    plt.savefig(route_of.plots.format("histogram_courses_dropouts"))
 
-def normalize_filtered_data(file):
+def cleaning_fields_unnecesaries(dataframe):
+    
+    dataframe       = dataframe.drop(exclude, axis=1)
+    return dataframe
 
-    exclude         = ['course_id','from','to','course','course_info','combinedopened','n_navigates','n_discussions','n_wikis','n_page_close','duration_in_days']
-    df_ex           = file.loc[:, file.columns.difference(exclude)]
+def normalize_filtered_data(dataframe):
+
+    df_ex           = dataframe.loc[:, dataframe.columns.difference(exclude)]
 
     min_max_scaler  = preprocessing.MinMaxScaler()
     df_norm         = min_max_scaler.fit_transform(df_ex)
@@ -37,8 +50,8 @@ def test_corr(df_ex):
     R   = corrcoef(transpose(df_ex))
     pcolor(R)
     plt.colorbar()
-    yticks(arange(0,19),range(0,19))
-    xticks(arange(0,19),range(0,19))
+    yticks(arange(0,18),range(0,18))
+    xticks(arange(0,18),range(0,18))
     plt.show()
     
     sns.set(style="white")
@@ -104,15 +117,18 @@ def read_dataset(path):
 if __name__ == '__main__':
     data_target = read_dataset(route_of.target_data)
     
-    data_target_treated = data_target.drop(data_target.columns[[0]], axis=1) 
-    data_norm = normalize_filtered_data(data_target_treated)
-    data_norm = pd.DataFrame(data_norm)
+    data_target_treated = data_target.drop(data_target.columns[[0]], axis=1)
+    data_target_treated['group'] = pd.cut(data_target_treated['dropout_percentage'], 3, labels=['quality_course','regular_course','low_quality_course'])
+    plot_courses(data_target_treated)
+    data_target_treated = cleaning_fields_unnecesaries(data_target_treated)
+
+#    data_norm = normalize_filtered_data(data_target_treated)
+#    data_norm = pd.DataFrame(data_norm)
     
-#    calculatePCA(data_norm)
-#    plot_courses(data_target)
+    calculatePCA(data_norm)
     test_corr(data_norm)
     # Da rangos, hay que cambiarlos a etiqueta
-    data_target_treated['group'] = pd.cut(data_target_treated['dropout_percentage'], 3)
-    
+#    data_target_treated['group'] = pd.cut(data_target_treated['dropout_percentage'], 3, labels=['quality_course','regular_course','low_quality_course'])
+
     
     

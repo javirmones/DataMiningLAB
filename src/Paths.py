@@ -14,3 +14,6 @@ interactions_enrollment             =   '../data/interaciones_merged_enrollment.
 interactions_enrollment_def         =   '../data/interaciones_merged_enrollment_def.csv'
 course_types_modules                =   '../data/cursos_con_numero_modulos_por_tipo.csv'
 course_types_events                 =   '../data/cursos_con_numero_eventos_por_tipo.csv'
+target_data                         =   '../data/data_target.csv'
+
+plots                               =   '../plots/{}.png'
